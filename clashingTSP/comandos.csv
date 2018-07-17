@@ -1,2 +1,2 @@
-#¿NOMBRE?;./datos/;matrizDistancias194.txt;matrizDistancias194.txt;2;TABU;50;10000;5;false;true;50;25;3;9352;QA194
-#¿NOMBRE?;./datos/;matrizDistancias52.txt;matrizDistancias52.txt;2;TABU;50;10000;5;false;true;50;1;0;7542;Berlin52
+#¿NOMBRE?;./datos/;matrizDistancias194.txt;matrizDistancias194.txt;2;AC;10;0;10000;0.25;0.75;false;-1;0.1;0.25;5000;false;10;9352;QA194
+#¿NOMBRE?;./datos/;matrizDistancias194.txt;matrizDistancias194.txt;2;AC;10;0;10000;0.25;0.75;false;-1;0.1;0.25;5000;true;10;9352;QA194

@@ -481,7 +481,7 @@ public class Main {
 								fileName = df.format(new java.util.Date())  ; //+ ;
 								//plotting
 								//final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
-								plot.Plot(nombreInstancia, "Distancia", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1));
+								plot.Plot(nombreInstancia, "Distancia", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1), "Iteraciones");
 
 
 
@@ -565,7 +565,7 @@ public class Main {
 								fileName = df.format(new java.util.Date())  ; //+ ;
 								//plotting
 								//final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
-								plot.Plot("Gráfico optimización Algoritmo Genético", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1));
+								plot.Plot("Gráfico optimización Algoritmo Genético", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1), "Generaciones");
 
 
 
@@ -671,7 +671,94 @@ public class Main {
 								fileName = df.format(new java.util.Date())  ; //+ ;
 								//plotting
 								//final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
-								plot.Plot("Gráfico optimización Algoritmo Híbrido", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1));
+								plot.Plot("Gráfico optimización Algoritmo Híbrido", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1), "Generaciones");
+
+
+
+								System.out.println("Mejor solucion: "+minimo(costos));
+
+								long endTime = System.nanoTime();
+								long totalTime = (endTime - startTime) / 1000000;
+								System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
+
+
+								fileWriter.write(fileName);
+								fileWriter.write(SEPARATOR);
+								fileWriter.write(String.valueOf(minimo(costos)));
+								fileWriter.write(SEPARATOR);
+								fileWriter.write(String.valueOf(totalTime));								
+								fileWriter.write(System.lineSeparator());
+
+							}
+						}else if(fields[5].equals("AC")) {
+							//System.out.println("######## Tabu search ########");
+							//#¿NOMBRE?;./datos/;F64.txt;D64.txt;2;AG;100;0;100;0.25;0.75;false;-1;0.1;0.25;5000;1;116;
+							int tamanoPoblacion = 100;
+							int criterioParada = 0;
+							int valorDetencion = 100;
+							double porcentajeCorteMenor = 0.25;
+							double porcentajeCorteMayor = 0.75;
+							boolean incluirMemoriaPrevia = false;
+							int numeroDeRestarts = -1;
+							double porcentajeAGuardarMejoresSolucionesEnMemoria = 0.1;
+
+							double ponderadorCantidadDePadres = 0.25;
+							int maximoIteracionesAdaptativo = 5000;
+							boolean isClash = false;
+							String nombreInstancia = "";
+
+							tamanoPoblacion = Integer.parseInt(fields[6]);
+
+							criterioParada = Integer.parseInt(fields[7]);
+
+							valorDetencion = Integer.parseInt(fields[8]);
+
+							porcentajeCorteMenor = Double.parseDouble(fields[9]);
+
+							porcentajeCorteMayor = Double.parseDouble(fields[10]);
+
+							incluirMemoriaPrevia = Boolean.parseBoolean(fields[11]);
+
+							numeroDeRestarts = Integer.parseInt(fields[12]);
+
+							porcentajeAGuardarMejoresSolucionesEnMemoria = Double.parseDouble(fields[13]);
+
+							ponderadorCantidadDePadres = Double.parseDouble(fields[14]);
+
+							maximoIteracionesAdaptativo = Integer.parseInt(fields[15]);
+								
+							isClash = Boolean.parseBoolean(fields[16]);
+
+							cantidadExperimentos = Integer.parseInt(fields[17]);
+							mejorMaximoConocido = Integer.parseInt(fields[18]);
+							nombreInstancia = fields[19];
+
+							//ArrayList<Double> costos = AlgoritmoGenetico.algoritmoGenetico(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria);
+
+							//plotting
+							//final XYPlotVista demo = new XYPlotVista("Gráfico optimización Algoritmos Genéticos", "Costo", costos); //Yo
+							System.out.println(dfLog.format(new java.util.Date()) + " Linea de experimento [" + cantLines + "]");
+
+							for (int i = 0; i < cantidadExperimentos; i++) { 
+
+								long startTime = System.nanoTime();// Contador de tiempo
+
+								System.out.println(dfLog.format(new java.util.Date()) + " Experimento [" + i + "]");
+
+								swap = new Swap(f, d);
+								solucionInicial = swap.generarSolcuionInicial(swap.getMatrizD());
+
+								swap.toStringSolcuionInicial(solucionInicial);
+
+								ArrayList<Double> costos = AlgoritmoClash.algoritmoClash(solucionInicial, cantidadSwappings, tamanoPoblacion, criterioParada, valorDetencion, swap, porcentajeCorteMenor, porcentajeCorteMayor, incluirMemoriaPrevia, numeroDeRestarts, porcentajeAGuardarMejoresSolucionesEnMemoria, ponderadorCantidadDePadres, maximoIteracionesAdaptativo, isClash);
+
+								//plotting
+								final XYPlotVista demo = new XYPlotVista("Gráfico optimización Algoritmo Clash", "Costo", costos); //Yo
+
+								fileName = df.format(new java.util.Date())  ; //+ ;
+								//plotting
+								//final XYPlot demo = new XYPlot("Gráfico optimización Tabu Search", "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1)); //Yo
+								plot.Plot(nombreInstancia, "Costo", costos, mejorMaximoConocido, fileName + "_" + String.format("%04d", i+1), "Generaciones");
 
 
 

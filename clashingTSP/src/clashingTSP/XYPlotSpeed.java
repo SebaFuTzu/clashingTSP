@@ -53,7 +53,7 @@ public class XYPlotSpeed {// extends ApplicationFrame {
 		//setContentPane(chartPanel);
 	}
 	
-	public void Plot(final String title, final String leyenda, ArrayList<Double> costos, double bkv, String fileName)  {
+	public void Plot(final String title, final String leyenda, ArrayList<Double> costos, double bkv, String fileName, String tipo)  {
 
 		//super(title);
 		final XYSeries series = new XYSeries(leyenda);
@@ -64,7 +64,7 @@ public class XYPlotSpeed {// extends ApplicationFrame {
 		}
 		// Create chart
 		final XYSeriesCollection data = new XYSeriesCollection(series);
-		final JFreeChart chart = ChartFactory.createXYLineChart(title, "Iteraciones", "Cercania al optimo (%)", data,
+		final JFreeChart chart = ChartFactory.createXYLineChart(title, tipo, "Cercania al optimo (%)", data,
 				PlotOrientation.VERTICAL, true, true, false);
 		chart.getPlot().setBackgroundPaint(ChartColor.white);
 		//deshabilitado mostrar el grafico en ventana
