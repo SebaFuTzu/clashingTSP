@@ -31,7 +31,26 @@ public class Main {
 			DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 			DateFormat dfLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-			if(args[0].equalsIgnoreCase("-opti")) {
+			if(args[0].equalsIgnoreCase("-clash")) {
+				//Clashing TSP
+				//matrices distancias
+				String distancias = "matrizDistancias9152.txt";
+				Stream<String> matrizF = null;
+				Stream<String> matrizD = Files.lines(Paths.get(path+distancias));				
+				int[][] f = null;
+				int[][] d = convertirString(matrizD);
+				
+				//solución a partir de archivo de texto
+				Swap swap = new Swap(f, d);
+				String solucionPath = "ar9152.tour";
+				Stream<String> solucionMatriz = Files.lines(Paths.get(path+solucionPath));
+				int[] solucionInicial = convertirARepresentacion(solucionMatriz);
+				swap.toStringSolcuionInicial(solucionInicial);
+				
+				double distancia = swap.evaluarDistanciaSolucionTSPLIB(solucionInicial);
+				System.out.println("Distancia solución inicial: "+distancia);
+				
+			}else if(args[0].equalsIgnoreCase("-opti")) {
 				//Código para presentación optimización
 				//Sebastián Aliaga - Natalia Morales
 				cantidadSwappings = Integer.parseInt(args[1]);
@@ -856,4 +875,12 @@ public class Main {
 		return min;
 	}
 
+	public static int[] convertirARepresentacion(Stream<String> filas){
+		String[] fila = filas.toArray(String[]::new);
+		int[] representacion = new int[fila.length];
+		for(int i=0;i<fila.length;i++){
+			representacion[i]=Integer.parseInt(fila[i]);
+		}
+		return representacion;
+	}
 }

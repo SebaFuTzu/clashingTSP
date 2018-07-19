@@ -201,6 +201,23 @@ public class Swap {
 		}
 		return distancia;
 	}
+	
+	public double evaluarDistanciaSolucionTSPLIB(int[] solucionInicial) {
+		distancia = 0;
+		try {
+			//distancia += matrizD[solucionInicial[0] - 1][solucionInicial[0] - 1];//[Fila cero primer elemento][segundo elemento de la solución inicial (columnas)]
+			for (int i = 0; i < solucionInicial.length; i++) {
+				if (i==(solucionInicial.length-1)) {//si estamos parados el la última distancia a sumar
+					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[0] - 1];//[penúltimo elemento][primer elemento solución inicial]
+				}else {
+					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[i + 1] - 1];
+				}				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return distancia;
+	}
 
 	public int[] calcularListaOrdenadaSumatoriaMatriz(int[][] matriz, boolean ascendente) {
 		int[] listaOrdenada = new int[matriz.length];
