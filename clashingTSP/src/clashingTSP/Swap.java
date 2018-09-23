@@ -1,9 +1,21 @@
 package clashingTSP;
 
+import java.sql.SQLException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Random;
 import java.util.stream.IntStream;
+
+import Entidades.Solucion;
+import SQL.SqlServer;
 
 public class Swap {
 	private int[][] matrizF;
@@ -35,11 +47,11 @@ public class Swap {
 	}
 
 	public int[] generarSolcuionInicial(int[][] matriz) {
-		int[] solucion = new int[matriz.length-1];
+		int[] solucion = new int[matriz.length - 1];
 		int i = 0;
-		while (i < matriz.length-1) {
+		while (i < matriz.length - 1) {
 			int indice = rnd.nextInt(matriz.length) + 1;
-			if(indice!=1) {
+			if (indice != 1) {
 				if (!IntStream.of(solucion).anyMatch(x -> x == indice)) {
 					solucion[i] = indice;
 					i++;
@@ -48,28 +60,20 @@ public class Swap {
 		}
 		return solucion;
 	}
-	
+
 	/**
-	public int[] generarSolcuionInicial(int[][] matriz) {
-		int[] solucion = new int[matriz.length];
-		int i = 0;
-		while (i < matriz.length) {
-			int indice = rnd.nextInt(matriz.length + 1);
-			if (!IntStream.of(solucion).anyMatch(x -> x == indice)) {
-				solucion[i] = indice;
-				i++;
-			}
-		}
-		return solucion;
-	}
-	*/
-	
+	 * public int[] generarSolcuionInicial(int[][] matriz) { int[] solucion = new
+	 * int[matriz.length]; int i = 0; while (i < matriz.length) { int indice =
+	 * rnd.nextInt(matriz.length + 1); if (!IntStream.of(solucion).anyMatch(x -> x
+	 * == indice)) { solucion[i] = indice; i++; } } return solucion; }
+	 */
+
 	public int[] generarSolucionInicialTSP(int[][] matriz) {
-		int[] solucion = new int[matriz.length-1];
+		int[] solucion = new int[matriz.length - 1];
 		int i = 0;
-		while (i < matriz.length-1) {
+		while (i < matriz.length - 1) {
 			int indice = rnd.nextInt(matriz.length) + 1;
-			if(indice!=1) {
+			if (indice != 1) {
 				if (!IntStream.of(solucion).anyMatch(x -> x == indice)) {
 					solucion[i] = indice;
 					i++;
@@ -149,69 +153,66 @@ public class Swap {
 
 	public double evaluarCostoSolucion(int[] solucionInicial) {
 		distancia = 0;
-		//solucionInicial = new int[]{3,4,2};
-		//solucionInicial = new int[]{22,31,18,3,17,21,42,7,2,30,23,20,50,29,16,46,44,34,35,36,39,40,37,38,48,24,5,15,6,4,25,12,28,27,26,47,13,14,52,11,51,33,43,10,9,8,41,19,45,32,49};
+		// solucionInicial = new int[]{3,4,2};
+		// solucionInicial = new
+		// int[]{22,31,18,3,17,21,42,7,2,30,23,20,50,29,16,46,44,34,35,36,39,40,37,38,48,24,5,15,6,4,25,12,28,27,26,47,13,14,52,11,51,33,43,10,9,8,41,19,45,32,49};
 		try {
 			distancia += matrizD[0][solucionInicial[0] - 1];
 			for (int i = 0; i < solucionInicial.length; i++) {
-				if (i==(solucionInicial.length-1)) {
+				if (i == (solucionInicial.length - 1)) {
 					distancia += matrizD[solucionInicial[i] - 1][0];
-				}else {
+				} else {
 					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[i + 1] - 1];
-				}				
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return distancia;
-	}
-	
-	/**
-	public double evaluarCostoSolucion(int[] solucionInicial) {
-		costo = 0;
-		try {
-			for (int i = 0; i < matrizF.length; i++) {
-				for (int j = 0; j < matrizF[i].length; j++) {
-					costo += matrizF[i][j] * matrizD[solucionInicial[i] - 1][solucionInicial[j] - 1];
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return costo;
+		return distancia;
 	}
-	*/
-	
+
+	/**
+	 * public double evaluarCostoSolucion(int[] solucionInicial) { costo = 0; try {
+	 * for (int i = 0; i < matrizF.length; i++) { for (int j = 0; j <
+	 * matrizF[i].length; j++) { costo += matrizF[i][j] * matrizD[solucionInicial[i]
+	 * - 1][solucionInicial[j] - 1]; } } } catch (Exception e) {
+	 * e.printStackTrace(); } return costo; }
+	 */
+
 	public double evaluarDistanciaSolucionTSP(int[] solucionInicial) {
 		distancia = 0;
-		//solucionInicial = new int[]{3,4,2};
-		//solucionInicial = new int[]{2, 3, 4};
-		//solucionInicial = new int[]{22,31,18,3,17,21,42,7,2,30,23,20,50,29,16,46,44,34,35,36,39,40,37,38,48,24,5,15,6,4,25,12,28,27,26,47,13,14,52,11,51,33,43,10,9,8,41,19,45,32,49};
+		// solucionInicial = new int[]{3,4,2};
+		// solucionInicial = new int[]{2, 3, 4};
+		// solucionInicial = new
+		// int[]{22,31,18,3,17,21,42,7,2,30,23,20,50,29,16,46,44,34,35,36,39,40,37,38,48,24,5,15,6,4,25,12,28,27,26,47,13,14,52,11,51,33,43,10,9,8,41,19,45,32,49};
 		try {
 			distancia += matrizD[0][solucionInicial[0] - 1];
 			for (int i = 0; i < solucionInicial.length; i++) {
-				if (i==(solucionInicial.length-1)) {
+				if (i == (solucionInicial.length - 1)) {
 					distancia += matrizD[solucionInicial[i] - 1][0];
-				}else {
+				} else {
 					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[i + 1] - 1];
-				}				
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return distancia;
 	}
-	
+
 	public double evaluarDistanciaSolucionTSPLIB(int[] solucionInicial) {
 		distancia = 0;
 		try {
-			//distancia += matrizD[solucionInicial[0] - 1][solucionInicial[0] - 1];//[Fila cero primer elemento][segundo elemento de la solución inicial (columnas)]
+			// distancia += matrizD[solucionInicial[0] - 1][solucionInicial[0] - 1];//[Fila
+			// cero primer elemento][segundo elemento de la solución inicial (columnas)]
 			for (int i = 0; i < solucionInicial.length; i++) {
-				if (i==(solucionInicial.length-1)) {//si estamos parados el la última distancia a sumar
-					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[0] - 1];//[penúltimo elemento][primer elemento solución inicial]
-				}else {
+				if (i == (solucionInicial.length - 1)) {// si estamos parados el la última distancia a sumar
+					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[0] - 1];// [penúltimo elemento][primer
+																							// elemento solución
+																							// inicial]
+				} else {
 					distancia += matrizD[solucionInicial[i] - 1][solucionInicial[i + 1] - 1];
-				}				
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -320,8 +321,9 @@ public class Swap {
 	}
 
 	public long calcularTamañoVecindad(int[][] matriz, int cantidadSwappings) {
-		//return factorial(matriz.length) / ((factorial(cantidadSwappings) * factorial(matriz.length - cantidadSwappings)));
-		return (matriz.length*(matriz.length-1))/2;
+		// return factorial(matriz.length) / ((factorial(cantidadSwappings) *
+		// factorial(matriz.length - cantidadSwappings)));
+		return (matriz.length * (matriz.length - 1)) / 2;
 	}
 
 	public static long factorial(int n) {
@@ -461,5 +463,97 @@ public class Swap {
 			}
 		}
 		return contiene;
+	}
+
+	public void guardarSolucion(int[] solucion, String instancia, String problema, double optimo) {
+		ArrayList<Solucion> soluciones = new ArrayList<>();
+		String fecha = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(Calendar.getInstance().getTime());
+		for (int i = 0; i < solucion.length; i++) {
+			Solucion sol = new Solucion();
+			sol.setOrden(i);
+			sol.setNodo(solucion[i]);
+			sol.setInstancia(instancia);
+			sol.setProblema(problema);
+			sol.setOptimo(optimo);
+			sol.setFechaEncontrado(fecha);
+			soluciones.add(sol);
+		}
+		try {
+			SqlServer.guardar(soluciones);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void guardarSolucionAPI(int[] solucion, String instancia, String problema, double optimo) {
+		try {
+			String fecha = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())+"T"+new SimpleDateFormat("HH_mm_ss").format(Calendar.getInstance().getTime());
+			for (int i = 0; i < solucion.length; i++) {
+				URL url = new URL("http://192.168.0.9:80/ClashAPI/api/soluciones/guardarNodo/"+(i+1)+"/"+solucion[i]+"/"+instancia+"/"+problema+"/"+optimo+"/"+fecha+"/");
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				conn.setRequestProperty("Accept", "application/json");
+
+				if (conn.getResponseCode() != 200) {
+					throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+				}
+
+				BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+				String output;
+				while ((output = br.readLine()) != null) {
+					if (output.equals("0")) {
+						System.out.println("No guardado nodo "+i);
+					}
+				}
+
+				conn.disconnect();
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void guardarTourAPI(int[] solucion, String instancia, String problema, double optimo) {
+		try {
+			String fecha = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())+"T"+new SimpleDateFormat("HH_mm_ss").format(Calendar.getInstance().getTime());
+			String tour = "[";
+			for (int i = 0; i < solucion.length; i++) {
+				if(i==solucion.length-1) {
+					tour+=solucion[i];
+				}else {
+					tour+=solucion[i]+"_";
+				}				
+			}
+			tour+="]";
+			
+			URL url = new URL("http://192.168.0.9:80/ClashAPI/api/tours/guardarTour/"+tour+"/"+instancia+"/"+problema+"/"+optimo+"/"+fecha+"/");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+
+			if (conn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+			String output;
+			while ((output = br.readLine()) != null) {
+				if (output.equals("0")) {
+					System.out.println("Error al guardar el tour");
+				}
+			}
+
+			conn.disconnect();
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

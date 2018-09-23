@@ -42,13 +42,51 @@ public class Main {
 				
 				//solución a partir de archivo de texto
 				Swap swap = new Swap(f, d);
-				String solucionPath = "ar9152.tour";
+				String solucionPath = "ar9152distancia837479.txt";
 				Stream<String> solucionMatriz = Files.lines(Paths.get(path+solucionPath));
 				int[] solucionInicial = convertirARepresentacion(solucionMatriz);
 				swap.toStringSolcuionInicial(solucionInicial);
 				
+				//calculo de tiempo que tarda en calcular la distancia
+				long startTime = System.nanoTime();// Contador de tiempo
+				
 				double distancia = swap.evaluarDistanciaSolucionTSPLIB(solucionInicial);
+				
+				long endTime = System.nanoTime();
+				long totalTime = (endTime - startTime) / 1000000;
+				System.out.println("tiempo ejecución: " + totalTime + " milisegundos");
+				
 				System.out.println("Distancia solución inicial: "+distancia);
+				
+			}else if(args[0].equalsIgnoreCase("-clash2")) {
+				//Clashing TSP
+				//matrices distancias
+				String distancias = "matrizDistancias9152.txt";
+				Stream<String> matrizF = null;
+				Stream<String> matrizD = Files.lines(Paths.get(path+distancias));				
+				int[][] f = null;
+				int[][] d = convertirString(matrizD);
+				
+				//solución a partir de archivo de texto
+				Swap swap = new Swap(f, d);
+				/**String solucionPath = "ar9152distancia837479.txt";//"ar9152.tour";
+				Stream<String> solucionMatriz = Files.lines(Paths.get(path+solucionPath));
+				int[] solucionInicial = convertirARepresentacion(solucionMatriz);
+				*/
+				
+				int[] solucionInicial = swap.generarSolucionInicialTSP(swap.getMatrizD());
+				
+				ArrayList<Double> costos = AlgoritmoModulador.Modulador2(solucionInicial, swap);
+				/**swap.toStringSolcuionInicial(solucionInicial);*/				
+				
+				//final XYPlot demo = new XYPlot("Gráfico optimización Algoritmo Modulador", "distancia", costos, 6156, "distancia");
+				String fileName = df.format(new java.util.Date());
+				XYPlotSpeed plot = new XYPlotSpeed();
+				plot.Plot("Gráfico optimización Modulador", "Costo sin memoria", costos, 837377, "Modulador_"+fileName+ String.format("%04d", 1), "");
+				
+				swap.guardarTourAPI(solucionInicial, "ar9152", "ArgentinaTSP", costos.get(costos.size()-1));
+				
+				System.out.println("Distancia solución inicial: "+costos.get(costos.size()-1));
 				
 			}else if(args[0].equalsIgnoreCase("-opti")) {
 				//Código para presentación optimización
